@@ -150,6 +150,10 @@ function tick() {
 
 //called when a node is clicked 
 function click(artist) {
+    //reject clicks that happen to artists on the path 
+    if(artist.onPath) {
+        return; 
+    }
     numClicks++;
     //first check to see if we have reached the goal artist 
     if(artist.artistId == goalArtist) {
