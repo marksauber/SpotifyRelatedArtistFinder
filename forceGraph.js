@@ -277,8 +277,24 @@ function removeLinksFromNode(artist, exceptions) {
     }
 }
 
-
 //NOTE : this ends the list of functions that need to have start() called after they run. See previous note.
+
+
+
+//undoes the previous click
+function undoLastClick() {
+    //remove links from the last node in the path 
+    removeLinksFromNode(path[path.length - 1], path);
+    //remove that node from the path 
+    path[path.length - 1].removeFromPath();
+    //remove that old path node from the previous node
+    removeLinksFromNode(path[path.length - 1], path);
+    //repopulate the previous node 
+    populateSimilarArtist(path[path.length - 1], function() {
+        start();
+    })
+}
+
 
 //////////////////////////////////
 // Spotify API helper functions //
@@ -303,7 +319,6 @@ var searchArtists = function (artistQuery, callback) {
             type: 'artist'
         },
         success: function (response) {
-            console.log(response);
             callback(response);
         }
     });
@@ -336,6 +351,19 @@ function Artist(spotifyArtistData) {
     this.addToPath = function() { 
         path.push(this);
         this.onPath = true; 
+    }
+    
+    this.removeFromPath = function() {
+        //find location in the path 
+        var pathLocation; 
+        for(var i = 0; i < path.length; i++) {
+            if(path[i].name == this.name) {
+                pathLocation = i; 
+                break;
+            }
+        }
+        path.splice(pathLocation, 1);
+        this.onPath = false; 
     }
 }
 
