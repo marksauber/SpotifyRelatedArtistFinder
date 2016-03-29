@@ -207,7 +207,6 @@ function createArtistNode(sourceArtist, artist) {
 function populateSimilarArtist(artist, callback) {
     artist.getSimilarArtists(function(data) {
         for(var i = 0; i < data.length; i++) {
-            console.log(i);
             if(!artistInGraph(data[i])) {
                 createArtistNode(artist, data[i]);
             }
@@ -295,6 +294,21 @@ var similarArtists = function(artistId, callback){
     });
 }
 
+//search for an artist by name
+var searchArtists = function (artistQuery, callback) {
+    $.ajax({
+        url: 'https://api.spotify.com/v1/search',
+        data: {
+            q: artistQuery,
+            type: 'artist'
+        },
+        success: function (response) {
+            console.log(response);
+            callback(response);
+        }
+    });
+}
+
 ////////////////////
 //  Artist Object //
 ////////////////////
@@ -345,10 +359,9 @@ function debugPrintNamesOfLinks() {
 
 // TODO testing remove later 
 var primary; 
-similarArtists(startingArtist, function(data) {
-    primary = new Artist(data.artists[0]);
+searchArtists("Britney Spears", function(data) {
+    primary = new Artist(data.artists.items[0]);
     primary.addToPath(); 
-    secondary = new Artist(data.artists[2]);
     createArtistNode(null, primary);
     populateSimilarArtist(primary, function() {
         start(); 
