@@ -62,8 +62,7 @@ var force = d3.layout.force()
 
 //we don't have any links or nodes yet so these are just blank
 var link = svg.selectAll('.link');
-var node = svg.selectAll('.node');
-var name = svg.selectAll('text.label');
+var node = svg.selectAll('.g');
 
 //create the div for the tooltip
 var div = d3.select("body").append("div")
@@ -108,7 +107,9 @@ function start() {
     });
     //create new nodes 
     node.enter()
-        .append("circle")
+        .append("g");
+    
+    node.append("circle")
         .attr("class", function(d) { return "node." + d.id; })
         //size of the circle
         .attr("r", 20)
@@ -117,12 +118,8 @@ function start() {
         //used for tooltips 
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .on("mousemove", function(d) { mousemove(d); });
-    
-    
-    
-    //recalculates the node's color 
-    node.attr("fill", function(d) {
+        .on("mousemove", function(d) { mousemove(d); })
+        .attr("fill", function(d) {
             if(d.onPath) {
                 return "#e0bc1a";
             }
@@ -132,13 +129,13 @@ function start() {
             else {
                 return "#1ae07a";
             }
-    });
+        });
     
-    node.enter()
-        .append("text")
-        .attr("class", "label")
-        .text(function(d) {return d.name; });
-    
+    node.append("text")
+        .attr("dx", 20)
+        .attr("dy", 5)
+        .text(function(d) { return d.name; });
+
     //remove dead nodes
     node.exit().remove();
     
