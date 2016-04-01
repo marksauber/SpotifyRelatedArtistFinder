@@ -1,8 +1,15 @@
+//TODO 
+//try only getting good sized images from spotify
+
 //Britney Spears
 var startingArtist = "1HY2Jd0NmPuamShAr6KMms";
 //Khe$a
 var goalArtist = "6LqNN22kT3074XbTVUrhzX";
 var numClicks = 0; 
+
+//used to determine what the next click should do.
+//holds the artist that was last clicked
+var lastClickedArtist = null; 
 
 //////////////////////////////////////////
 //  Creates the D3 ForceLayout Graph    //
@@ -104,15 +111,15 @@ function start() {
         .attr("class", function(d) { return "node." + d.id; })
         //size of the circle
         .attr("r", 20)
-        //color of the circle
-        .attr("fill", function(d) {
-            if(d.onPath) {
-                return "#e0bc1a";
-            }
-            else {
-                return "#1ae07a";
-            }
-        })
+//        //color of the circle
+//        .attr("fill", function(d) {
+//            if(d.onPath) {
+//                return "#e0bc1a";
+//            }
+//            else {
+//                return "#1ae07a";
+//            }
+//        })
         //when clicked calls click(), passing the artist at this node
         .on("click", function(d) { click(d); })
         //used for tooltips 
@@ -124,6 +131,9 @@ function start() {
     node.attr("fill", function(d) {
             if(d.onPath) {
                 return "#e0bc1a";
+            }
+            else if(d.lastClicked) {
+                return "#118EB8";
             }
             else {
                 return "#1ae07a";
@@ -150,6 +160,19 @@ function tick() {
 
 //called when a node is clicked 
 function click(artist) {
+    if(artist == lastClickedArtist) {
+        continueClick(artist);
+    }
+    else if(artist != lastClickedArtist) {
+        infoClick(artist);
+    }
+    lastClickedArtist = artist;
+    artist.lastClicked = true;
+    start();
+}
+
+//a function that will advance the game when clicked
+function continueClick(artist) {
     //reject clicks that happen to artists on the path 
     if(artist.onPath) {
         return; 
@@ -173,7 +196,11 @@ function click(artist) {
             start(); 
         });
     }, 1000);
+}
 
+//wil ldisplay info on the artist when clicked (added because it might be useful later, maybe delete)
+function infoClick(artist) {
+    displayArtistInfo(artist);
 }
 
 //mouseover, mouseout, and mousemove functions are used to display tooltips
@@ -332,9 +359,11 @@ var searchArtists = function (artistQuery, callback) {
 function Artist(spotifyArtistData) { 
     this.name = spotifyArtistData.name;
     this.artistId = spotifyArtistData.id; 
+    this.imageLink = spotifyArtistData.images[0].url; //right now only gets the first image, should really change later. 
     //the nodes are required to have an id field. I want it to be name. 
     this.id = this.name;
     this.onPath = false; 
+    this.lastClicked = false; 
     
     //returns an array of artists that are similar to this artist
     this.getSimilarArtists = function(callback) { 
@@ -367,6 +396,24 @@ function Artist(spotifyArtistData) {
     }
 }
 
+///////////////////////////////
+//  Proto Sidebar Functions  //
+///////////////////////////////
+
+//displays all the information on this artist 
+function displayArtistInfo(artist) {
+    displayArtistPicture(artist);
+}
+
+//displays a picture of this artist
+function displayArtistPicture(artist) {
+    d3.select("#info")
+        .select("img")
+        .attr("src", artist.imageLink)
+        .attr("style", "width:250;height:250;");
+}
+
+
 //////////////////////////
 //  Debugging Functions //
 //////////////////////////
@@ -389,6 +436,7 @@ function debugPrintNamesOfLinks() {
 var primary; 
 searchArtists("Britney Spears", function(data) {
     primary = new Artist(data.artists.items[0]);
+    console.log(data.artists.items[0]);
     primary.addToPath(); 
     createArtistNode(null, primary);
     populateSimilarArtist(primary, function() {
