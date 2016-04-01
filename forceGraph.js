@@ -106,10 +106,10 @@ function start() {
         return d.id;
     });
     //create new nodes 
-    node.enter()
+    var nodeEnter = node.enter()
         .append("g");
     
-    node.append("circle")
+    nodeEnter.append("circle")
         .attr("class", function(d) { return "node." + d.id; })
         //size of the circle
         .attr("r", 20)
@@ -119,7 +119,13 @@ function start() {
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
         .on("mousemove", function(d) { mousemove(d); })
-        .attr("fill", function(d) {
+    
+    nodeEnter.append("text")
+        .attr("dx", 20)
+        .attr("dy", 5)
+        .text(function(d) { return d.name; });
+    
+    node.attr("fill", function(d) {
             if(d.onPath) {
                 return "#e0bc1a";
             }
@@ -130,11 +136,6 @@ function start() {
                 return "#1ae07a";
             }
         });
-    
-    node.append("text")
-        .attr("dx", 20)
-        .attr("dy", 5)
-        .text(function(d) { return d.name; });
 
     //remove dead nodes
     node.exit().remove();
