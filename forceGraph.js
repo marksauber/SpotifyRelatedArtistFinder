@@ -63,6 +63,7 @@ var force = d3.layout.force()
 //we don't have any links or nodes yet so these are just blank
 var link = svg.selectAll('.link');
 var node = svg.selectAll('.node');
+var name = svg.selectAll('text.label');
 
 //create the div for the tooltip
 var div = d3.select("body").append("div")
@@ -111,21 +112,14 @@ function start() {
         .attr("class", function(d) { return "node." + d.id; })
         //size of the circle
         .attr("r", 20)
-//        //color of the circle
-//        .attr("fill", function(d) {
-//            if(d.onPath) {
-//                return "#e0bc1a";
-//            }
-//            else {
-//                return "#1ae07a";
-//            }
-//        })
         //when clicked calls click(), passing the artist at this node
         .on("click", function(d) { click(d); })
         //used for tooltips 
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
         .on("mousemove", function(d) { mousemove(d); });
+    
+    
     
     //recalculates the node's color 
     node.attr("fill", function(d) {
@@ -140,22 +134,31 @@ function start() {
             }
     });
     
+    node.enter()
+        .append("text")
+        .attr("class", "label")
+        .text(function(d) {return d.name; });
+    
     //remove dead nodes
     node.exit().remove();
-
+    
     //start the forcelayout 
     force.start();
 }
 
 //this function is used by the force layout to calculate where the nodes should be 
 function tick() { 
-  node.attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; })
+//    node.attr("cx", function(d) { return d.x; })
+//      .attr("cy", function(d) { return d.y; });
 
-  link.attr("x1", function(d) { return d.source.x; })
+    link.attr("x1", function(d) { return d.source.x; })
       .attr("y1", function(d) { return d.source.y; })
       .attr("x2", function(d) { return d.target.x; })
       .attr("y2", function(d) { return d.target.y; });
+    
+    node.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+    });
 }
 
 //called when a node is clicked 
