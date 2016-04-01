@@ -125,7 +125,8 @@ function start() {
         .attr("dy", 5)
         .text(function(d) { return d.name; });
     
-    node.attr("fill", function(d) {
+    node.selectAll("circle")
+        .attr("fill", function(d) {
             if(d.onPath) {
                 return "#e0bc1a";
             }
