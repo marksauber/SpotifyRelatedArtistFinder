@@ -109,6 +109,7 @@ function start() {
     var nodeEnter = node.enter()
         .append("g");
     
+    //adds circles only to new nodes
     nodeEnter.append("circle")
         .attr("class", function(d) { return "node." + d.id; })
         //size of the circle
@@ -118,13 +119,14 @@ function start() {
         //used for tooltips 
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .on("mousemove", function(d) { mousemove(d); })
-    
+        .on("mousemove", function(d) { mousemove(d); });
+    //adds text only to new nodes 
     nodeEnter.append("text")
         .attr("dx", 20)
         .attr("dy", 5)
         .text(function(d) { return d.name; });
     
+    //updates the color for all the nodes 
     node.selectAll("circle")
         .attr("fill", function(d) {
             if(d.onPath) {
