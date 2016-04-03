@@ -83,8 +83,6 @@ function rescale() {
       + " scale(" + scale + ")");
 }
 
-
-
 //this function should be called after changing nodes[] or links[] to update the graph
 function start() { 
     //recalculate all the links (creates new links and removes old ones )
@@ -190,7 +188,7 @@ function continueClick(artist) {
     numClicks++;
     //first check to see if we have reached the goal artist 
     if(artist.artistId == goalArtist) {
-        alert("Reached goal artist in " + numClicks + " clicks");
+        alert("Reached goal artist in " + numClicks + " clicks \n your score is " + calculateScore(numClicks));
         removeLinksFromNode(path[path.length - 1], [artist]);
         artist.addToPath(); 
         start();
@@ -332,6 +330,14 @@ function undoLastClick() {
     })
 }
 
+/////////////////////
+//  Game Functions //
+/////////////////////
+
+//calculates the score with the function 1000/2(x-9.6)^2)
+function calculateScore(numClicks) {
+  return Math.ceil(1000 / (2 * Math.pow((numClicks - 9.6), 2)));
+}
 
 //////////////////////////////////
 // Spotify API helper functions //
@@ -453,3 +459,8 @@ searchArtists("Britney Spears", function(data) {
         start(); 
     });
 });
+
+/* //testing the scoring method 
+for(var i = 0; i < 40; i++) {
+  console.log(i + " score is " + calculateScore(i));
+} */
