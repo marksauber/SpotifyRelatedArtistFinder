@@ -372,7 +372,6 @@ function getArtist(artistSearch, callback) {
     //search through each artist returned and see if their name matches our search 
     for(var i = 0; i < data.items.length; i++) {
       if(data.items[i].name == artistSearch) {
-        console.log(data.items[i]);
         artist = new Artist(data.items[i]);
         break;
       }
@@ -386,6 +385,7 @@ function getArtist(artistSearch, callback) {
     }
   });
 }
+ 
 //////////////////////////////////
 // Spotify API helper functions //
 //////////////////////////////////
@@ -432,15 +432,15 @@ var fetchTopTracks = function (artistId, callback) {
 function Artist(spotifyArtistData) { 
     this.name = spotifyArtistData.name;
     this.artistId = spotifyArtistData.id; 
-    this.imageLink = spotifyArtistData.images[0].url; //right now only gets the first image, should really change later.
+    this.imageLink = spotifyArtistData.images[0].url; //the largest image is always the first one 
+    //this.images = spotifyArtistData.images;
     this.genres = spotifyArtistData.genres;
     this.popularity = spotifyArtistData.popularity; 
     //the nodes are required to have an id field. I want it to be name. 
     this.id = this.name;
     this.onPath = false; 
     this.lastClicked = false; 
-    
-    
+
     //returns an array of artists that are similar to this artist
     this.getSimilarArtists = function(callback) { 
         similarArtists(this.artistId, function(data) {
@@ -478,6 +478,27 @@ function Artist(spotifyArtistData) {
       });
     }
     
+    this.getTop5SongNames = function(callback) {
+      fetchTopTracks(this.artistId, function(data) {
+        var result = [];
+        //if there are at least 5 top tracks, get the first 5 names of songs
+        if(data.tracks.length >= 5) {
+          for(var i = 0; i < 5; i++) {
+            result.push(data.tracks[i].name);
+          }
+        }
+        //otherwise get all the song names that we can manage
+        else { 
+          console.log("Couldn't find more than 5 tracks");
+          for(var i = 0; i < data.tracks.length; i++) {
+            result.push(data.tracks[i].name);
+          }
+        }
+        //return the result
+        callback(result);
+      })
+    }
+    
     this.getGenres = function() {
       if(this.genres.length == 0) {
         var result = [];
@@ -496,7 +517,7 @@ function Artist(spotifyArtistData) {
 
 //displays all the information on this artist 
 function displayArtistInfo(artist) {
-    //displayArtistPicture(artist);
+    displayArtistPicture(artist);
 }
 
 //displays a picture of this artist
@@ -504,7 +525,7 @@ function displayArtistPicture(artist) {
     d3.select("#info")
         .select("img")
         .attr("src", artist.imageLink)
-        .attr("style", "width:250;height:250;");
+        .attr("style", "width:250;height:auto;");
 }
 
 
