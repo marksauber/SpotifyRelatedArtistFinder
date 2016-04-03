@@ -33,7 +33,6 @@ var leaderboard = [
 io.sockets.on('connection', function(socket) {
   socket.on('myEvent', function(content) {
     console.log(content);
-    socket.emit('server', "This is the server: got your message");
 
   });
     socket.on('finish', function(score) {
