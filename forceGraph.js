@@ -164,6 +164,10 @@ function tick() {
 
 //called when a node is clicked 
 function click(artist) {
+    //prevents multiple artists showing up as being the last clicked 
+    if(lastClickedArtist != null) {
+      lastClickedArtist.lastClicked = false; 
+    }
     if(artist == lastClickedArtist) {
         continueClick(artist);
     }
@@ -202,7 +206,7 @@ function continueClick(artist) {
     }, 1000);
 }
 
-//wil ldisplay info on the artist when clicked (added because it might be useful later, maybe delete)
+//will display info on the artist when clicked (added because it might be useful later, maybe delete)
 function infoClick(artist) {
     displayArtistInfo(artist);
 }
