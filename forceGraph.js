@@ -519,6 +519,7 @@ function Artist(spotifyArtistData) {
 
 //displays all the information on this artist 
 function displayArtistInfo(artist) {
+    $('#info').attr('hidden', false);
     $('#artistName').text(artist.name);
     displayArtistPicture(artist);
     artist.getTopTrack(function(track){
