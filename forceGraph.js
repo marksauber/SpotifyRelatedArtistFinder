@@ -1,10 +1,9 @@
 //TODO 
 //try only getting good sized images from spotify
 
-//Britney Spears
-var startingArtist = "1HY2Jd0NmPuamShAr6KMms";
-//Khe$a
-var goalArtist = "6LqNN22kT3074XbTVUrhzX";
+//Used to control gameplay
+var startingArtist;
+var goalArtist = "test";
 var numClicks = 0; 
 
 //used to determine what the next click should do.
@@ -339,6 +338,52 @@ function calculateScore(numClicks) {
   return Math.ceil(1000 / (2 * Math.pow((numClicks - 9.6), 2)));
 }
 
+//tries to set the starting artist using the artist search 
+function setStartingArtist(artistSearch) {
+  getArtist(artistSearch, function(data) {
+    if(data != null) {
+      console.log("set starting artist to " + data.name);
+      startingArtist = data;
+      startingArtist.addToPath(); 
+      createArtistNode(null, startingArtist);
+      populateSimilarArtist(startingArtist, function() {
+          start(); 
+      });      
+    }
+  });
+}
+
+//tries to set the goal artist using the artist search 
+function setGoalArtist(artistSearch) {
+  getArtist(artistSearch, function(data) {
+    if(data != null) {
+      console.log("set goal artist to " + data.name);
+      goalArtist = data.artistId;
+    }
+  });
+} 
+
+//tries to get the artist whose name matches the artistSearch
+function getArtist(artistSearch, callback) {
+  searchArtists(artistSearch, function(data) {
+    var artist = null; 
+    data = data.artists; 
+    //search through each artist returned and see if their name matches our search 
+    for(var i = 0; i < data.items.length; i++) {
+      if(data.items[i].name == artistSearch) {
+        artist = new Artist(data.items[i]);
+        break;
+      }
+    }
+    if(artist == null) {
+      alert("could not find matching artist")
+      callback(null);
+    }
+    else {
+      callback(artist);
+    }
+  });
+}
 //////////////////////////////////
 // Spotify API helper functions //
 //////////////////////////////////
@@ -448,8 +493,13 @@ function debugPrintNamesOfLinks() {
     }
 }
 
+
+
 // TODO testing remove later 
-var primary; 
+setStartingArtist("Lady Gaga");
+setGoalArtist("Madonna");
+
+/* var primary; 
 searchArtists("Britney Spears", function(data) {
     primary = new Artist(data.artists.items[0]);
     console.log(data.artists.items[0]);
@@ -458,7 +508,7 @@ searchArtists("Britney Spears", function(data) {
     populateSimilarArtist(primary, function() {
         start(); 
     });
-});
+}); */
 
 /* //testing the scoring method 
 for(var i = 0; i < 40; i++) {
