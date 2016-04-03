@@ -1,49 +1,86 @@
 <html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <script src='http://d3js.org/d3.v3.min.js'></script>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src='http://d3js.org/d3.v3.min.js'></script>
+
+    <style>
+        circle.node {
+            fill: #F0F000;
+            stroke: #fff;
+            stroke-width: 2px;
+        }
         
-        <style>
-
-            circle.node {
-                fill: #F0F000;
-                stroke: #fff;
-                stroke-width: 2px;
-            }
-
-            .node text {
-                font: 10px sans-serif;
-            }
-            
-            .link {
-                stroke: #777;
-                stroke-width: 2px;
-            }
-            
-            .tooltip {
-                position: absolute;
-                text-align: center;
-                width: 100px;
-                height: 12px;
-                padding: 8px;
-                margin-top: -20px;
-                font: 10px sans-serif;
-                background: #ddd;
-                pointer-events: none;
-            }
-
-        </style>
+        .node text {
+            font: 10px sans-serif;
+        }
         
-    </head>
-    
-    <body>
+        .link {
+            stroke: #777;
+            stroke-width: 2px;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 100px;
+            height: 12px;
+            padding: 8px;
+            margin-top: -20px;
+            font: 10px sans-serif;
+            background: #ddd;
+            pointer-events: none;
+        }
+        
+        .container {
+            position: relative;
+            overflow: auto;
+        }
+
+        #info {
+            position: absolute;
+            top: 80px;
+            bottom: 0;
+            right: 0;
+            width: 400px;
+            background: gray;
+        }
+        #info-content {
+            width: 75%;
+            margin: auto;
+        }
+
+        #chart {
+            border: 1px solid black;
+            height: 750px;
+            width: 750px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Related Artist Finder</h1>
+        <div id="info">
+            <div id="info-content">
+                <h2 id="artistName"></h2>
+                <img height="200" width="250">
+                <p id="bio"> Bio goes here</p>
+                <h3>Top Track</h3>
+                <p id="trackName"></p>
+                <audio id="audioPlayer" type="audio/mpeg" controls></audio>
+            </div>
+        </div>
+
         <div id="chart">
         </div>
-        
-        <div id="info">
-            <img></img> 
-        </div>
-    </body>
-    
-    <script src="forceGraph.js"></script>
+
+
+    </div>
+</body>
+
+<script src="forceGraph.js"></script>
+
 </html>

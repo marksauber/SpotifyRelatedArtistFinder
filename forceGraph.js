@@ -15,8 +15,8 @@ var lastClickedArtist = null;
 //////////////////////////////////////////
 
 //size of the svg 
-const width = 800;
-const height = 800; 
+const width = 750;
+const height = 750;
 //nodes are the artist of the graph 
 var nodes = [];
 //links are drawn between the artist 
@@ -163,7 +163,8 @@ function tick() {
 
 //called when a node is clicked 
 function click(artist) {
-    //prevents multiple artists showing up as being the last clicked 
+    console.log('clicked', artist);
+    //prevents multiple artists showing up as being the last clicked
     if(lastClickedArtist != null) {
       lastClickedArtist.lastClicked = false; 
     }
@@ -208,6 +209,7 @@ function continueClick(artist) {
 //will display info on the artist when clicked (added because it might be useful later, maybe delete)
 function infoClick(artist) {
     displayArtistInfo(artist);
+
 }
 
 //mouseover, mouseout, and mousemove functions are used to display tooltips
@@ -434,7 +436,7 @@ function Artist(spotifyArtistData) {
     this.artistId = spotifyArtistData.id; 
     this.imageLink = spotifyArtistData.images[0].url; //right now only gets the first image, should really change later.
     this.genres = spotifyArtistData.genres;
-    this.popularity = spotifyArtistData.popularity; 
+    this.popularity = spotifyArtistData.popularity;
     //the nodes are required to have an id field. I want it to be name. 
     this.id = this.name;
     this.onPath = false; 
@@ -496,7 +498,12 @@ function Artist(spotifyArtistData) {
 
 //displays all the information on this artist 
 function displayArtistInfo(artist) {
-    //displayArtistPicture(artist);
+    $('#artistName').text(artist.name);
+    displayArtistPicture(artist);
+    artist.getTopTrack(function(track){
+        $('#audioPlayer').attr('src', track.preview_url).get(0).play();
+        $('#trackName').text(track.name);
+    })
 }
 
 //displays a picture of this artist
