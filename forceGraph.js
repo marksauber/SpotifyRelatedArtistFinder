@@ -368,9 +368,11 @@ function getArtist(artistSearch, callback) {
   searchArtists(artistSearch, function(data) {
     var artist = null; 
     data = data.artists; 
+    
     //search through each artist returned and see if their name matches our search 
     for(var i = 0; i < data.items.length; i++) {
       if(data.items[i].name == artistSearch) {
+        console.log(data.items[i]);
         artist = new Artist(data.items[i]);
         break;
       }
@@ -412,6 +414,16 @@ var searchArtists = function (artistQuery, callback) {
     });
 }
 
+//get top tracks for an artist
+var fetchTopTracks = function (artistId, callback) {
+    $.ajax({
+        url: 'https://api.spotify.com/v1/artists/' + artistId + "/top-tracks?country=US",
+        success: function (response) {
+            callback(response);
+        }
+    });
+};
+
 ////////////////////
 //  Artist Object //
 ////////////////////
@@ -420,11 +432,14 @@ var searchArtists = function (artistQuery, callback) {
 function Artist(spotifyArtistData) { 
     this.name = spotifyArtistData.name;
     this.artistId = spotifyArtistData.id; 
-    this.imageLink = spotifyArtistData.images[0].url; //right now only gets the first image, should really change later. 
+    this.imageLink = spotifyArtistData.images[0].url; //right now only gets the first image, should really change later.
+    this.genres = spotifyArtistData.genres;
+    this.popularity = spotifyArtistData.popularity; 
     //the nodes are required to have an id field. I want it to be name. 
     this.id = this.name;
     this.onPath = false; 
     this.lastClicked = false; 
+    
     
     //returns an array of artists that are similar to this artist
     this.getSimilarArtists = function(callback) { 
@@ -454,6 +469,24 @@ function Artist(spotifyArtistData) {
         }
         path.splice(pathLocation, 1);
         this.onPath = false; 
+    }
+    
+    //gets the top track for this artist 
+    this.getTopTrack = function(callback) {
+      fetchTopTracks(this.artistId, function(data) {
+        callback(data.tracks[0]);
+      });
+    }
+    
+    this.getGenres = function() {
+      if(this.genres.length == 0) {
+        var result = [];
+        result[0] = "No genres listed by spotify";
+        return result; 
+      }
+      else {
+        return this.genres; 
+      }
     }
 }
 
@@ -492,8 +525,6 @@ function debugPrintNamesOfLinks() {
         console.log(links[i].source.name + " to " + links[i].target.name);
     }
 }
-
-
 
 // TODO testing remove later 
 setStartingArtist("Lady Gaga");
