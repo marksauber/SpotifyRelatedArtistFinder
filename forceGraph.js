@@ -95,7 +95,8 @@ function start() {
     //make new links
     link.enter()
         .insert("line", ".node")
-        .attr("class", "link");
+        .attr("class", "link")
+        .style("opacity", "0.6");
     //remove dead links 
     link.exit()
         .remove();
@@ -119,7 +120,8 @@ function start() {
         //used for tooltips 
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .on("mousemove", function(d) { mousemove(d); });
+        .on("mousemove", function(d) { mousemove(d); })
+        .style("opacity", "0.8");
     //adds text only to new nodes 
     nodeEnter.append("text")
         .attr("dx", 20)
@@ -410,7 +412,7 @@ function Artist(spotifyArtistData) {
 
 //displays all the information on this artist 
 function displayArtistInfo(artist) {
-    displayArtistPicture(artist);
+    //displayArtistPicture(artist);
 }
 
 //displays a picture of this artist
