@@ -187,8 +187,11 @@ function continueClick(artist) {
     }
     numClicks++;
     //first check to see if we have reached the goal artist 
+    //first check to see if we have reached the goal artist
     if(artist.artistId == goalArtist) {
-        alert("Reached goal artist in " + numClicks + " clicks \n your score is " + calculateScore(numClicks));
+        var score = calculateScore(numClicks);
+        socket.emit('finish',score);
+        alert("Reached goal artist in " + numClicks + " clicks \n your score is " + score);
         removeLinksFromNode(path[path.length - 1], [artist]);
         artist.addToPath(); 
         start();
