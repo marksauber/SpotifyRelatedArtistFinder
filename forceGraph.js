@@ -529,6 +529,14 @@ function displayArtistInfo(artist) {
         $('#audioPlayer').attr('src', track.preview_url).get(0).play();
         $('#trackName').text(track.name);
     })
+    artist.getTop5SongNames(function(songs){
+      var songString = "";
+      for(var i = 0; i < songs.length; i++) {
+        songString += songs[i] + "<br>";
+      }
+      $('#top5Tracks').html(songString);
+    })
+    $('artistPopularity').text(artist.popularity);
 }
 
 //displays a picture of this artist
