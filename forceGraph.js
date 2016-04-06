@@ -547,8 +547,20 @@ function displayArtistPicture(artist) {
         .attr("style", "width:250;height:auto;");
 }
 
+//gets the max score from the leaderboard
+function getMaxScore(leaderboard) {
+    var max = -1; 
+    for(var i = 0; i < leaderboard.length; i++) {
+        if(leaderboard[i].score > max) {
+            max = leaderboard[i].score;
+        }
+    }
+    return max; 
+}
+
  //nice horizontal bar chart
  function displayLeaderboard(leaderboard) {
+  var maxScore = getMaxScore(leaderboard);
   console.log("in display leaderboard");
 
   //remove the previous chart
@@ -562,7 +574,7 @@ function displayArtistPicture(artist) {
   var color = d3.scale.category20();
 
   var x = d3.scale.linear()
-      .domain([0, 10000])
+      .domain([0, maxScore])
       .range([0, width]);
 
   var svg = d3.select("#chart")

@@ -25,10 +25,10 @@
 //---------------------------------------------------------------
 var io = require('socket.io').listen(5000);
 var leaderboard = [
-    {name : "Arnold Schwarzenegger", score: 5},
-    {name : "David Hasselhoff", score: 4},
-    {name : "Kenneth Scott", score: 3},
-     {name : "Archer Codename: Duchess", score: 3}
+    {name : "Arnold Schwarzenegger", score: 195},
+    {name : "David Hasselhoff", score: 73},
+    {name : "Kenneth Scott", score: 38},
+    {name : "Archer Codename: Duchess", score: 5}
 ];
 io.sockets.on('connection', function(socket) {
   socket.on('myEvent', function(content) {
