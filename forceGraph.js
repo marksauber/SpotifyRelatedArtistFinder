@@ -163,7 +163,6 @@ function tick() {
 
 //called when a node is clicked 
 function click(artist) {
-    console.log('clicked', artist);
     //prevents multiple artists showing up as being the last clicked
     if(lastClickedArtist != null) {
       lastClickedArtist.lastClicked = false; 
