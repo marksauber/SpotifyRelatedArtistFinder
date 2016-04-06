@@ -60,9 +60,15 @@
 </head>
 
 <body>
-
     <div class="container">
         <h1>Related Artist Finder</h1>
+        <div>
+          Starting Artist: <input id="startInput" type="text" value="Ke$ha">
+          <input type="submit" value="Submit" onclick="setStartingArtist(document.getElementById('startInput').value)">   
+          Goal Artist: <input id="goalInput" type="text" value="P!nk">
+          <input type="submit" value="Submit" onclick="setGoalArtist(document.getElementById('goalInput').value)">
+          <input type="submit" value="Undo" onclick="undoLastClick()">
+        </div>
         <div id="info">
             <div id="info-content">
                 <h2 id="artistName"></h2>
@@ -73,7 +79,7 @@
                 <audio id="audioPlayer" type="audio/mpeg" controls></audio>
             </div>
         </div>
-
+        <br>
         <div id="chart">
         </div>
 

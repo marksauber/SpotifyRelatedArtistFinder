@@ -187,7 +187,6 @@ function continueClick(artist) {
     }
     numClicks++;
     //first check to see if we have reached the goal artist 
-    //first check to see if we have reached the goal artist
     if(artist.artistId == goalArtist) {
         var score = calculateScore(numClicks);
         socket.emit('finish',score);
@@ -348,6 +347,7 @@ function setStartingArtist(artistSearch) {
   getArtist(artistSearch, function(data) {
     if(data != null) {
       console.log("set starting artist to " + data.name);
+      alert("Set starting artist to " + data.name);
       startingArtist = data;
       startingArtist.addToPath(); 
       createArtistNode(null, startingArtist);
@@ -363,6 +363,7 @@ function setGoalArtist(artistSearch) {
   getArtist(artistSearch, function(data) {
     if(data != null) {
       console.log("set goal artist to " + data.name);
+      alert("set goal artist to " + data.name);
       goalArtist = data.artistId;
     }
   });
@@ -556,10 +557,6 @@ function debugPrintNamesOfLinks() {
         console.log(links[i].source.name + " to " + links[i].target.name);
     }
 }
-
-// TODO testing remove later 
-setStartingArtist("Lady Gaga");
-setGoalArtist("Madonna");
 
 /* var primary; 
 searchArtists("Britney Spears", function(data) {
