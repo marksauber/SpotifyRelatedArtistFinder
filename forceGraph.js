@@ -194,6 +194,8 @@ function continueClick(artist) {
         removeLinksFromNode(path[path.length - 1], [artist]);
         artist.addToPath(); 
         start();
+        //will display the leaderboard after 3 seconds 
+        setTimeout(function() {displayLeaderboard(l);}, 3000);
         return; 
     }
     //we want to remove everything from the last artist in the path but the artist we 
@@ -547,7 +549,63 @@ function displayArtistPicture(artist) {
         .attr("style", "width:250;height:auto;");
 }
 
+/////////////////////////
+// Server interactions //
+/////////////////////////
 
+/* var socket = io("http://localhost"); 
+
+//not sure if this is the right name
+socket.on("getName", function(data) {
+  var name = window.prompt("Congratulations! You made the leaderboard! Please enter your name");
+});
+ */
+
+ var l = [{name: "bobby", score: "900"}, {name: "jose", score: "80"}, {name: "ben", score: "7"}];
+ 
+ //nice horizontal bar chart 
+ function displayLeaderboard(leaderboard) {
+  console.log("in display leaderboard");
+  
+  //remove the previous chart
+  d3.select("svg").remove();
+  
+  var width = 800;
+  var height = 800;
+  var barHeight = 20; 
+  
+  var color = d3.scale.category20(); 
+  
+  var x = d3.scale.linear()
+      .domain([0, 10000])
+      .range([0, width]);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+      
+  var svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+  var bar = svg.selectAll("g")
+      .data(leaderboard)
+      .enter()
+      .append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+  bar.append("rect")
+      .attr("width", function(d) {return d.score})
+      .attr("height", barHeight - 1)
+      .attr("fill", function(d, i) {return color(i);});
+
+  bar.append("text")
+      .attr("y", barHeight / 2)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name + "  : " + d.score + " pts"; });
+ }
+ 
 //////////////////////////
 //  Debugging Functions //
 //////////////////////////
