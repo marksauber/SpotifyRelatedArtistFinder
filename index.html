@@ -1,9 +1,9 @@
 <html>
-
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src='http://d3js.org/d3.v3.min.js'></script>
-
+    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"></script>
     <style>
         circle.node {
             fill: #F0F000;
@@ -60,20 +60,27 @@
 </head>
 
 <body>
-
     <div class="container">
         <h1>Related Artist Finder</h1>
-        <div id="info" hidden="true">
+        <div >
+          Starting Artist: <input id="startInput" type="text" value="Ke$ha">
+          <input type="submit" value="Submit" onclick="setStartingArtist(document.getElementById('startInput').value)">
+          Goal Artist: <input id="goalInput" type="text" value="P!nk">
+          <input type="submit" value="Submit" onclick="setGoalArtist(document.getElementById('goalInput').value)">
+          <input type="submit" value="Undo" onclick="undoLastClick()">
+        </div>
+        <div id="info" hidden>
             <div id="info-content">
                 <h2 id="artistName"></h2>
                 <img height="200" width="250">
-                <p id="bio"> Bio goes here</p>
                 <h3>Top Track</h3>
                 <p id="trackName"></p>
                 <audio id="audioPlayer" type="audio/mpeg" controls></audio>
+                <h3> Other Popular Songs </h3>
+                <div id="top5Tracks"></div>
             </div>
         </div>
-
+        <br>
         <div id="chart">
         </div>
 
@@ -83,4 +90,21 @@
 
 <script src="forceGraph.js"></script>
 
+<script>
+    //Maybe put in own file
+  // connect to WEBSOCKET server
+  var socket = io.connect('http://localhost:5000');
+
+  // Fire an event (that the server will handle
+  socket.emit('myEvent', 'Hello Message from the client');
+
+  socket.on('getName', function(data) {
+      var name = prompt("Congratulations you made the leaderboard! Please enter your name!", "Mclovin");
+      socket.emit('givenName',name);
+  });
+
+  socket.on('newLeaderboard', function(leaderboard) {
+      displayLeaderboard(leaderboard);
+  });
+</script>
 </html>

@@ -187,10 +187,12 @@ function continueClick(artist) {
     numClicks++;
     //first check to see if we have reached the goal artist 
     if(artist.artistId == goalArtist) {
-        alert("Reached goal artist in " + numClicks + " clicks \n your score is " + calculateScore(numClicks));
+        var score = calculateScore(numClicks);
+        alert("Reached goal artist in " + numClicks + " clicks \n your score is " + score);
         removeLinksFromNode(path[path.length - 1], [artist]);
         artist.addToPath(); 
         start();
+        socket.emit('finish',score);
         return; 
     }
     //we want to remove everything from the last artist in the path but the artist we 
@@ -344,6 +346,7 @@ function setStartingArtist(artistSearch) {
   getArtist(artistSearch, function(data) {
     if(data != null) {
       console.log("set starting artist to " + data.name);
+      alert("Set starting artist to " + data.name);
       startingArtist = data;
       startingArtist.addToPath(); 
       createArtistNode(null, startingArtist);
@@ -359,6 +362,7 @@ function setGoalArtist(artistSearch) {
   getArtist(artistSearch, function(data) {
     if(data != null) {
       console.log("set goal artist to " + data.name);
+      alert("set goal artist to " + data.name);
       goalArtist = data.artistId;
     }
   });
@@ -525,6 +529,14 @@ function displayArtistInfo(artist) {
         $('#audioPlayer').attr('src', track.preview_url).get(0).play();
         $('#trackName').text(track.name);
     })
+    artist.getTop5SongNames(function(songs){
+      var songString = "";
+      for(var i = 0; i < songs.length; i++) {
+        songString += songs[i] + "<br>";
+      }
+      $('#top5Tracks').html(songString);
+    })
+    $('artistPopularity').text(artist.popularity);
 }
 
 //displays a picture of this artist
@@ -535,6 +547,45 @@ function displayArtistPicture(artist) {
         .attr("style", "width:250;height:auto;");
 }
 
+ //nice horizontal bar chart
+ function displayLeaderboard(leaderboard) {
+  console.log("in display leaderboard");
+
+  //remove the previous chart
+  d3.select("svg").remove();
+
+  //make the new bar chart
+  var width = 750;
+  var height = 700;
+  var barHeight = 20;
+
+  var color = d3.scale.category20();
+
+  var x = d3.scale.linear()
+      .domain([0, 10000])
+      .range([0, width]);
+
+  var svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+  var bar = svg.selectAll("g")
+      .data(leaderboard)
+      .enter()
+      .append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+  bar.append("rect")
+      .attr("width", function(d) {return x(d.score)})
+      .attr("height", barHeight - 1)
+      .attr("fill", function(d, i) {return color(i);});
+
+  bar.append("text")
+      .attr("y", barHeight / 2)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name + "  : " + d.score + " pts"; });
+ }
 
 //////////////////////////
 //  Debugging Functions //
@@ -553,10 +604,6 @@ function debugPrintNamesOfLinks() {
         console.log(links[i].source.name + " to " + links[i].target.name);
     }
 }
-
-// TODO testing remove later 
-setStartingArtist("Lady Gaga");
-setGoalArtist("Madonna");
 
 /* var primary; 
 searchArtists("Britney Spears", function(data) {
