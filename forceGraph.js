@@ -189,13 +189,11 @@ function continueClick(artist) {
     //first check to see if we have reached the goal artist 
     if(artist.artistId == goalArtist) {
         var score = calculateScore(numClicks);
-        socket.emit('finish',score);
         alert("Reached goal artist in " + numClicks + " clicks \n your score is " + score);
         removeLinksFromNode(path[path.length - 1], [artist]);
         artist.addToPath(); 
         start();
-        //will display the leaderboard after 3 seconds 
-        setTimeout(function() {displayLeaderboard(l);}, 3000);
+        socket.emit('finish',score);
         return; 
     }
     //we want to remove everything from the last artist in the path but the artist we 
@@ -549,20 +547,6 @@ function displayArtistPicture(artist) {
         .attr("style", "width:250;height:auto;");
 }
 
-/////////////////////////
-// Server interactions //
-/////////////////////////
-
-/* var socket = io("http://localhost"); 
-
-//not sure if this is the right name
-socket.on("getName", function(data) {
-  var name = window.prompt("Congratulations! You made the leaderboard! Please enter your name");
-});
- */
-
- var l = [{name: "bobby", score: "900"}, {name: "jose", score: "80"}, {name: "ben", score: "7"}];
- 
  //nice horizontal bar chart 
  function displayLeaderboard(leaderboard) {
   console.log("in display leaderboard");
@@ -570,8 +554,9 @@ socket.on("getName", function(data) {
   //remove the previous chart
   d3.select("svg").remove();
   
-  var width = 800;
-  var height = 800;
+  //make the new bar chart 
+  var width = 750;
+  var height = 700;
   var barHeight = 20; 
   
   var color = d3.scale.category20(); 
@@ -580,10 +565,6 @@ socket.on("getName", function(data) {
       .domain([0, 10000])
       .range([0, width]);
 
-  var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-      
   var svg = d3.select("#chart")
       .append("svg")
       .attr("width", width)
@@ -596,7 +577,7 @@ socket.on("getName", function(data) {
       .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
 
   bar.append("rect")
-      .attr("width", function(d) {return d.score})
+      .attr("width", function(d) {return x(d.score)})
       .attr("height", barHeight - 1)
       .attr("fill", function(d, i) {return color(i);});
 

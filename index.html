@@ -103,12 +103,7 @@
   });
 
   socket.on('newLeaderboard', function(leaderboard) {
-      var displayString = "";
-      var i;
-      for(i=0;i<leaderboard.length;i++){
-          displayString+=leaderboard[i].name + " "+ leaderboard[i].score+"\n";
-      }
-      alert(displayString);
+      displayLeaderboard(leaderboard);
   });
 </script>
 </html>
