@@ -1,9 +1,13 @@
 <html>
+
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src='http://d3js.org/d3.v3.min.js'></script>
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"></script>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+
     <style>
         circle.node {
             fill: #F0F000;
@@ -39,12 +43,13 @@
 
         #info {
             position: absolute;
-            top: 80px;
+            top: 120px;
             bottom: 0;
             right: 0;
             width: 400px;
             background: gray;
         }
+
         #info-content {
             width: 75%;
             margin: auto;
@@ -62,12 +67,22 @@
 <body>
     <div class="container">
         <h1>Related Artist Finder</h1>
-        <div >
-          Starting Artist: <input id="startInput" type="text" value="Ke$ha">
-          <input type="submit" value="Submit" onclick="setStartingArtist(document.getElementById('startInput').value)">
-          Goal Artist: <input id="goalInput" type="text" value="P!nk">
-          <input type="submit" value="Submit" onclick="setGoalArtist(document.getElementById('goalInput').value)">
-          <input type="submit" value="Undo" onclick="undoLastClick()">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="startInput">Starting Artist: </label>
+                <input id="startInput" type="text" value="Ke$ha" class="form-control">
+            </div>
+
+            <input type="submit" value="Submit" class="btn btn-default" onclick="setStartingArtist(document.getElementById('startInput').value)">
+            <div class="form-group">
+                <label for="goalInput">Goal Artist: </label>
+                <input id="goalInput" type="text" value="P!nk" class="form-control">
+            </div>
+            <input type="submit" value="Submit" class="btn btn-default" onclick="setGoalArtist(document.getElementById('goalInput').value)">
+            <input type="submit" value="Undo" class="btn btn-warning" onclick="undoLastClick()">
+            <button type="submit" class="btn btn-danger" onclick="location.reload()">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Refresh
+            </button>
         </div>
         <div id="info" hidden>
             <div id="info-content">
@@ -88,23 +103,25 @@
     </div>
 </body>
 
+<script src="js/bootstrap.min.js"></script>
 <script src="forceGraph.js"></script>
 
 <script>
     //Maybe put in own file
-  // connect to WEBSOCKET server
-  var socket = io.connect('http://localhost:5000');
+    // connect to WEBSOCKET server
+    var socket = io.connect('http://localhost:5000');
 
-  // Fire an event (that the server will handle
-  socket.emit('myEvent', 'Hello Message from the client');
+    // Fire an event (that the server will handle
+    socket.emit('myEvent', 'Hello Message from the client');
 
-  socket.on('getName', function(data) {
-      var name = prompt("Congratulations you made the leaderboard! Please enter your name!", "Mclovin");
-      socket.emit('givenName',name);
-  });
+    socket.on('getName', function (data) {
+        var name = prompt("Congratulations you made the leaderboard! Please enter your name!", "Mclovin");
+        socket.emit('givenName', name);
+    });
 
-  socket.on('newLeaderboard', function(leaderboard) {
-      displayLeaderboard(leaderboard);
-  });
+    socket.on('newLeaderboard', function (leaderboard) {
+        displayLeaderboard(leaderboard);
+    });
 </script>
+
 </html>

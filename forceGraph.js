@@ -488,7 +488,7 @@ function Artist(spotifyArtistData) {
         var result = [];
         //if there are at least 5 top tracks, get the first 5 names of songs
         if(data.tracks.length >= 5) {
-          for(var i = 0; i < 5; i++) {
+          for(var i = 1; i < 5; i++) {
             result.push(data.tracks[i].name);
           }
         }
